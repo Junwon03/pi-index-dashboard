@@ -130,7 +130,7 @@ const ZoneChart = ({ data, timeRange }) => {
               tickLine={false}
               tick={{ fill: '#444', fontSize: 9 }}
               tickFormatter={(v) => v.toFixed(1)}
-              ticks={[0, 0.45, 0.60, 0.80, 1.0]}
+              ticks={[0, 0.40, 0.60, 0.80, 1.0]}
             />
             
             <YAxis 
@@ -147,10 +147,10 @@ const ZoneChart = ({ data, timeRange }) => {
             
             <Area yAxisId="pi" type="monotone" dataKey={() => 1.0} stroke="none" fill="url(#criticalZone)" baseValue={0.80} />
             <Area yAxisId="pi" type="monotone" dataKey={() => 0.80} stroke="none" fill="url(#cautionZone)" baseValue={0.60} />
-            <Area yAxisId="pi" type="monotone" dataKey={() => 0.60} stroke="none" fill="url(#elevatedZone)" baseValue={0.45} />
-            <Area yAxisId="pi" type="monotone" dataKey={() => 0.45} stroke="none" fill="url(#stableZone)" baseValue={0} />
+            <Area yAxisId="pi" type="monotone" dataKey={() => 0.60} stroke="none" fill="url(#elevatedZone)" baseValue={0.40} />
+            <Area yAxisId="pi" type="monotone" dataKey={() => 0.40} stroke="none" fill="url(#stableZone)" baseValue={0} />
             
-            <Line yAxisId="pi" type="monotone" dataKey={() => 0.45} stroke="#00d4aa" strokeWidth={1} strokeDasharray="3 3" dot={false} />
+            <Line yAxisId="pi" type="monotone" dataKey={() => 0.40} stroke="#00d4aa" strokeWidth={1} strokeDasharray="3 3" dot={false} />
             <Line yAxisId="pi" type="monotone" dataKey={() => 0.60} stroke="#4a9eff" strokeWidth={1} strokeDasharray="3 3" dot={false} />
             <Line yAxisId="pi" type="monotone" dataKey={() => 0.80} stroke="#ffaa00" strokeWidth={1} strokeDasharray="3 3" dot={false} />
             
@@ -291,7 +291,7 @@ export default function App() {
   const avgPi = assets.reduce((sum, [_, a]) => sum + a.latest.pi, 0) / assets.length;
   
   const getSystemStatus = (avg) => {
-    if (avg < 0.45) return { status: 'STABLE', color: '#00d4aa', message: 'All markets stable. Low structural stress.' };
+    if (avg < 0.40) return { status: 'STABLE', color: '#00d4aa', message: 'All markets stable. Low structural stress.' };
     if (avg < 0.60) return { status: 'ELEVATED', color: '#4a9eff', message: 'Elevated vigilance recommended.' };
     if (avg < 0.80) return { status: 'CAUTION', color: '#ffaa00', message: 'Caution advised. Significant stress detected.' };
     return { status: 'CRITICAL', color: '#ff4757', message: 'Critical alert. High instability risk.' };
@@ -329,8 +329,8 @@ export default function App() {
 
         <div className="grid grid-cols-4 gap-2 mb-5">
           {[
-            { label: 'STABLE', range: '< 0.45', color: '#00d4aa', bg: 'rgba(0,212,170,0.1)' },
-            { label: 'ELEVATED', range: '0.45-0.60', color: '#4a9eff', bg: 'rgba(74,158,255,0.1)' },
+            { label: 'STABLE', range: '< 0.40', color: '#00d4aa', bg: 'rgba(0,212,170,0.1)' },
+            { label: 'ELEVATED', range: '0.40-0.60', color: '#4a9eff', bg: 'rgba(74,158,255,0.1)' },
             { label: 'CAUTION', range: '0.60-0.80', color: '#ffaa00', bg: 'rgba(255,170,0,0.1)' },
             { label: 'CRITICAL', range: '≥ 0.80', color: '#ff4757', bg: 'rgba(255,71,87,0.1)' },
           ].map(({ label, range, color, bg }) => (
