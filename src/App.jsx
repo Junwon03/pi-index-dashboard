@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { XAxis, YAxis, Tooltip, ResponsiveContainer, Area, ComposedChart, Line } from 'recharts';
 
 // pi_data.json URL (GitHub raw)
-const DATA_URL = 'https://raw.githubusercontent.com/Junwon03/pi-calculator-junwon2/main/output/pi_data.json';
+const DATA_URL = '/data/pi_data.json';
 
 const StatusBadge = ({ status }) => {
   const config = {
