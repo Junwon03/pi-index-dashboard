@@ -7,7 +7,7 @@ const DATA_URL = '/data/pi_data.json';
 // Color Theme (Light + Classic)
 // ============================================
 const theme = {
-  bg: '#f8f7f4',           // 따뜻한 크림색 배경
+  bg: '#f8f7f4',
   card: '#ffffff',
   cardBorder: '#e5e1d8',
   text: '#2c2c2c',
@@ -15,7 +15,6 @@ const theme = {
   textLight: '#999999',
   chartBg: '#fafaf8',
   
-  // Status colors (더 진하게)
   stable: '#1a8f6e',
   elevated: '#2563eb', 
   caution: '#c27803',
@@ -23,31 +22,96 @@ const theme = {
 };
 
 // ============================================
-// Navigation Component
+// Navigation Component with Dropdown
 // ============================================
-const Navigation = ({ currentPage, setCurrentPage }) => {
-  const pages = [
-    { id: 'dashboard', label: 'Dashboard' },
-    { id: 'about', label: 'About' },
-    { id: 'paper', label: 'Paper' },
+const Navigation = ({ currentPage, setCurrentPage, currentFilter, setCurrentFilter }) => {
+  const [showDropdown, setShowDropdown] = useState(false);
+  
+  const categories = [
+    { id: 'all', label: 'All' },
+    { id: 'equities', label: 'Equities' },
+    { id: 'crypto', label: 'Crypto' },
+    { id: 'commodities', label: 'Commodities' },
+    { id: 'bonds', label: 'Bonds' },
   ];
+
+  const getFilterLabel = () => {
+    if (currentFilter === 'all') return '';
+    const cat = categories.find(c => c.id === currentFilter);
+    return cat ? ` · ${cat.label}` : '';
+  };
 
   return (
     <nav className="flex gap-1 p-1 rounded-lg border" style={{ backgroundColor: theme.card, borderColor: theme.cardBorder }}>
-      {pages.map(({ id, label }) => (
+      {/* Dashboard with dropdown */}
+      <div 
+        className="relative"
+        onMouseEnter={() => setShowDropdown(true)}
+        onMouseLeave={() => setShowDropdown(false)}
+      >
         <button
-          key={id}
-          onClick={() => setCurrentPage(id)}
+          onClick={() => { setCurrentPage('dashboard'); setCurrentFilter('all'); }}
           className="px-4 py-2 rounded-md text-sm transition-all"
           style={{
-            backgroundColor: currentPage === id ? theme.bg : 'transparent',
-            color: currentPage === id ? theme.text : theme.textMuted,
-            fontWeight: currentPage === id ? '600' : '400',
+            backgroundColor: currentPage === 'dashboard' ? theme.bg : 'transparent',
+            color: currentPage === 'dashboard' ? theme.text : theme.textMuted,
+            fontWeight: currentPage === 'dashboard' ? '600' : '400',
           }}
         >
-          {label}
+          Dashboard{getFilterLabel()}
         </button>
-      ))}
+        
+        {/* Dropdown */}
+        {showDropdown && (
+          <div 
+            className="absolute top-full left-0 mt-1 py-1 rounded-lg shadow-lg z-50 min-w-36"
+            style={{ backgroundColor: theme.card, border: `1px solid ${theme.cardBorder}` }}
+          >
+            {categories.map(({ id, label }) => (
+              <button
+                key={id}
+                onClick={() => { setCurrentPage('dashboard'); setCurrentFilter(id); setShowDropdown(false); }}
+                className="w-full px-4 py-2 text-left text-sm transition-all"
+                style={{ 
+                  backgroundColor: currentFilter === id ? theme.bg : 'transparent',
+                  color: currentFilter === id ? theme.text : theme.textMuted,
+                  fontWeight: currentFilter === id ? '600' : '400',
+                }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = theme.bg}
+                onMouseLeave={(e) => e.target.style.backgroundColor = currentFilter === id ? theme.bg : 'transparent'}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+      
+      {/* About */}
+      <button
+        onClick={() => setCurrentPage('about')}
+        className="px-4 py-2 rounded-md text-sm transition-all"
+        style={{
+          backgroundColor: currentPage === 'about' ? theme.bg : 'transparent',
+          color: currentPage === 'about' ? theme.text : theme.textMuted,
+          fontWeight: currentPage === 'about' ? '600' : '400',
+        }}
+      >
+        About
+      </button>
+      
+      {/* Paper */}
+      <button
+        onClick={() => setCurrentPage('paper')}
+        className="px-4 py-2 rounded-md text-sm transition-all"
+        style={{
+          backgroundColor: currentPage === 'paper' ? theme.bg : 'transparent',
+          color: currentPage === 'paper' ? theme.text : theme.textMuted,
+          fontWeight: currentPage === 'paper' ? '600' : '400',
+        }}
+      >
+        Paper
+      </button>
     </nav>
   );
 };
@@ -177,7 +241,7 @@ const PaperPage = () => {
       subtitle: 'Under evaluation at Nature Portfolio journal',
       url: 'https://doi.org/10.21203/rs.3.rs-8968998/v1',
       icon: '📄',
-      status: 'Under evaluation'
+      status: 'Under Review'
     },
     {
       title: 'GitHub Repository',
@@ -512,8 +576,20 @@ const AssetCard = ({ assetKey, data }) => {
   );
 };
 
-const DashboardPage = ({ data, avgPi, systemStatus }) => {
-  const assets = Object.entries(data);
+const DashboardPage = ({ data, avgPi, systemStatus, currentFilter }) => {
+  const categoryMap = {
+    equities: ['SPY', 'QQQ'],
+    crypto: ['BTC', 'ETH'],
+    commodities: ['GLD', 'SLV', 'USO'],
+    bonds: ['TLT'],
+  };
+  
+  let assets = Object.entries(data);
+  
+  if (currentFilter !== 'all') {
+    const allowedAssets = categoryMap[currentFilter] || [];
+    assets = assets.filter(([key]) => allowedAssets.includes(key));
+  }
 
   return (
     <>
@@ -554,6 +630,7 @@ export default function App() {
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
   const [currentPage, setCurrentPage] = useState('dashboard');
+  const [currentFilter, setCurrentFilter] = useState('all');
 
   useEffect(() => {
     fetch(DATA_URL)
@@ -631,12 +708,17 @@ export default function App() {
           </div>
           
           {/* Navigation */}
-          <Navigation currentPage={currentPage} setCurrentPage={setCurrentPage} />
+          <Navigation 
+            currentPage={currentPage} 
+            setCurrentPage={setCurrentPage} 
+            currentFilter={currentFilter} 
+            setCurrentFilter={setCurrentFilter} 
+          />
         </header>
 
         {/* Page Content */}
         {currentPage === 'dashboard' && (
-          <DashboardPage data={data} avgPi={avgPi} systemStatus={systemStatus} />
+          <DashboardPage data={data} avgPi={avgPi} systemStatus={systemStatus} currentFilter={currentFilter} />
         )}
         {currentPage === 'about' && <AboutPage />}
         {currentPage === 'paper' && <PaperPage />}
