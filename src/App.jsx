@@ -443,7 +443,11 @@ const AssetCard = ({ assetKey, data }) => {
     SPY: { name: "S&P 500", ticker: "SPY" },
     QQQ: { name: "NASDAQ 100", ticker: "QQQ" },
     BTC: { name: "Bitcoin", ticker: "BTC-USD" },
-    ETH: { name: "Ethereum", ticker: "ETH-USD" }
+    ETH: { name: "Ethereum", ticker: "ETH-USD" },
+    GLD: { name: "Gold", ticker: "GLD" },
+    SLV: { name: "Silver", ticker: "SLV" },
+    USO: { name: "Oil", ticker: "USO" },
+    TLT: { name: "Treasury Bond", ticker: "TLT" }
   };
   
   const { name, ticker } = names[assetKey] || { name: assetKey, ticker: assetKey };
