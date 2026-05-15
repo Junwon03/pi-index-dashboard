@@ -301,7 +301,7 @@ const PaperPage = () => {
           Lee, J. (2026). Domain-agnostic multiplicative stress framework for systemic collapse. 
           <span style={{ color: theme.textLight }}> Preprint at Research Square.</span>
           <br />
-          https://doi.org/10.21203/rs.3.rs-8968998/v1
+          https://doi.org/10.21203/rs.3.rs-8968998/v2
         </div>
       </div>
 
