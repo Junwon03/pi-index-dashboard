@@ -238,8 +238,8 @@ const PaperPage = () => {
   const links = [
     {
       title: 'Preprint (Research Square)',
-      subtitle: 'Under evaluation at Nature Portfolio journal',
-      url: 'https://doi.org/10.21203/rs.3.rs-8968998/v1',
+      subtitle: 'Under Review at Nature Portfolio journal',
+      url: 'https://www.researchsquare.com/article/rs-8968998/v2',
       icon: '📄',
       status: 'Under Review'
     },
